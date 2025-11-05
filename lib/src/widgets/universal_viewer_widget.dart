@@ -15,7 +15,6 @@ import 'package:universal_viewer/src/widgets/viewer_toolbar.dart';
 
 /// Main Universal Viewer Widget
 class UniversalViewer extends StatefulWidget {
-
   const UniversalViewer({
     super.key,
     this.url,
@@ -30,10 +29,10 @@ class UniversalViewer extends StatefulWidget {
 
   /// Create viewer from URL
   factory UniversalViewer.url(
-      String url, {
-        ViewerConfig config = const ViewerConfig(),
-        ViewerController? controller,
-      }) {
+    String url, {
+    ViewerConfig config = const ViewerConfig(),
+    ViewerController? controller,
+  }) {
     return UniversalViewer(
       url: url,
       config: config,
@@ -43,10 +42,10 @@ class UniversalViewer extends StatefulWidget {
 
   /// Create viewer from file
   factory UniversalViewer.file(
-      PlatformFile file, {
-        ViewerConfig config = const ViewerConfig(),
-        ViewerController? controller,
-      }) {
+    PlatformFile file, {
+    ViewerConfig config = const ViewerConfig(),
+    ViewerController? controller,
+  }) {
     return UniversalViewer(
       file: file,
       config: config,
@@ -56,12 +55,12 @@ class UniversalViewer extends StatefulWidget {
 
   /// Create viewer from bytes
   factory UniversalViewer.bytes(
-      Uint8List bytes, {
-        String? fileName,
-        String? mimeType,
-        ViewerConfig config = const ViewerConfig(),
-        ViewerController? controller,
-      }) {
+    Uint8List bytes, {
+    String? fileName,
+    String? mimeType,
+    ViewerConfig config = const ViewerConfig(),
+    ViewerController? controller,
+  }) {
     return UniversalViewer(
       bytes: bytes,
       fileName: fileName,
@@ -73,16 +72,17 @@ class UniversalViewer extends StatefulWidget {
 
   /// Create viewer from HTML content
   factory UniversalViewer.html(
-      String htmlContent, {
-        ViewerConfig config = const ViewerConfig(),
-        ViewerController? controller,
-      }) {
+    String htmlContent, {
+    ViewerConfig config = const ViewerConfig(),
+    ViewerController? controller,
+  }) {
     return UniversalViewer(
       htmlContent: htmlContent,
       config: config,
       controller: controller,
     );
   }
+
   final String? url;
   final PlatformFile? file;
   final Uint8List? bytes;
@@ -135,11 +135,10 @@ class _UniversalViewerState extends State<UniversalViewer> {
 
     try {
       // Determine file name
+      // Determine file name
       final fileName = widget.fileName ??
           widget.file?.name ??
-          (widget.url != null
-              ? Uri.tryParse(widget.url!)?.pathSegments.last
-              : null);
+          (widget.url != null ? _extractFileNameFromUrl(widget.url!) : null);
 
       // Get bytes
       final bytes = widget.bytes ?? widget.file?.bytes;
@@ -219,7 +218,8 @@ class _UniversalViewerState extends State<UniversalViewer> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = widget.config.theme ?? ViewerTheme.fromThemeData(Theme.of(context));
+    final theme =
+        widget.config.theme ?? ViewerTheme.fromThemeData(Theme.of(context));
 
     return ValueListenableBuilder<ViewerState>(
       valueListenable: _controller,
@@ -233,7 +233,8 @@ class _UniversalViewerState extends State<UniversalViewer> {
             children: [
               // Toolbar
               if (widget.config.showToolbar)
-                widget.config.customToolbarBuilder?.call(context, _controller) ??
+                widget.config.customToolbarBuilder
+                        ?.call(context, _controller) ??
                     ViewerToolbar(
                       controller: _controller,
                       config: widget.config,
@@ -253,7 +254,28 @@ class _UniversalViewerState extends State<UniversalViewer> {
     );
   }
 
-  Widget _buildContent(BuildContext context, ViewerState state, ViewerTheme theme) {
+  String? _extractFileNameFromUrl(String url) {
+    try {
+      final uri = Uri.tryParse(url);
+      if (uri == null) return null;
+
+      // Get path segments
+      final segments = uri.pathSegments;
+
+      // If there are segments and the last one is not empty, use it
+      if (segments.isNotEmpty && segments.last.isNotEmpty) {
+        return segments.last;
+      }
+
+      // Otherwise, use the domain name
+      return uri.host.isNotEmpty ? uri.host : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Widget _buildContent(
+      BuildContext context, ViewerState state, ViewerTheme theme) {
     // Loading state
     if (state.isLoading) {
       return widget.config.loadingWidget ??
@@ -312,7 +334,8 @@ class _UniversalViewerState extends State<UniversalViewer> {
     return _buildContentByType(context, state, theme);
   }
 
-  Widget _buildContentByType(BuildContext context, ViewerState state, ViewerTheme theme) {
+  Widget _buildContentByType(
+      BuildContext context, ViewerState state, ViewerTheme theme) {
     // Show placeholder if hidden by overlay
     if (state.isHidden && widget.config.showPlaceholderOnOverlay) {
       return widget.config.placeholderBuilder?.call(context) ??
@@ -364,12 +387,13 @@ class _UniversalViewerState extends State<UniversalViewer> {
             const SizedBox(height: 8),
             Text(
               'Content hidden while dialog is open',
-              style: TextStyle(fontSize: 14, color: theme.textColor.withOpacity(0.6)),
+              style: TextStyle(
+                  fontSize: 14, color: theme.textColor.withValues(alpha: 0.6)),
             ),
             const SizedBox(height: 16),
             Icon(
               Icons.visibility_off,
-              color: theme.textColor.withOpacity(0.4),
+              color: theme.textColor.withValues(alpha: 0.4),
               size: 32,
             ),
           ],

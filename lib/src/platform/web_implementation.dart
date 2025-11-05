@@ -1,4 +1,4 @@
-import 'dart:html' as html;
+import 'dart:js_interop';
 import 'dart:typed_data';
 import 'dart:ui_web' as ui_web;
 
@@ -8,30 +8,35 @@ import 'package:universal_viewer/src/core/content_type.dart';
 import 'package:universal_viewer/src/core/viewer_config.dart';
 import 'package:universal_viewer/src/utils/file_utility.dart';
 import 'package:universal_viewer/src/utils/url_utility.dart';
+import 'package:web/web.dart' as web;
 
-/// Web-specific implementation using dart:html
+/// Web-specific implementation using package:web
 class WebImplementation {
-  static final List<html.Element> _createdElements = [];
+  static final List<web.HTMLElement> _createdElements = [];
   static int _viewIdCounter = 0;
 
   /// Create a blob URL from bytes
   static String createBlobUrl(Uint8List bytes, String mimeType) {
-    final blob = html.Blob([bytes], mimeType);
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    return url;
+    final blob = web.Blob(
+      [bytes.toJS].toJS,
+      web.BlobPropertyBag(type: mimeType),
+    );
+    return web.URL.createObjectURL(blob);
   }
 
   /// Create a blob URL from HTML content
   static String createHtmlBlobUrl(String htmlContent) {
-    final blob = html.Blob([htmlContent], 'text/html');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    return url;
+    final blob = web.Blob(
+      [htmlContent.toJS].toJS,
+      web.BlobPropertyBag(type: 'text/html'),
+    );
+    return web.URL.createObjectURL(blob);
   }
 
   /// Revoke a blob URL
   static void revokeBlobUrl(String url) {
     if (url.startsWith('blob:')) {
-      html.Url.revokeObjectUrl(url);
+      web.URL.revokeObjectURL(url);
     }
   }
 
@@ -48,7 +53,8 @@ class WebImplementation {
     if (url != null && !url.startsWith('blob:')) {
       downloadUrl = url;
     } else if (bytes != null) {
-      final mime = mimeType ?? FileUtility.getMimeType(fileName: fileName, bytes: bytes);
+      final mime =
+          mimeType ?? FileUtility.getMimeType(fileName: fileName, bytes: bytes);
       downloadUrl = createBlobUrl(bytes, mime);
       needsCleanup = true;
     } else if (url != null) {
@@ -57,10 +63,11 @@ class WebImplementation {
       throw Exception('No valid source for download');
     }
 
-    final anchor = html.AnchorElement(href: downloadUrl)
-      ..target = '_blank'
-      ..download = fileName
-      ..click();
+    final anchor = web.document.createElement('a') as web.HTMLAnchorElement;
+    anchor.href = downloadUrl;
+    anchor.target = '_blank';
+    anchor.download = fileName;
+    anchor.click();
 
     if (needsCleanup) {
       Future.delayed(const Duration(seconds: 1), () {
@@ -131,13 +138,14 @@ class WebImplementation {
   /// Build video element
   static Widget _buildVideoElement(String url) {
     return _createHtmlElementView((viewId) {
-      final element = html.VideoElement()
-        ..src = url
-        ..controls = true
-        ..style.width = '100%'
-        ..style.height = '100%'
-        ..style.objectFit = 'contain'
-        ..style.backgroundColor = '#000';
+      final element =
+          web.document.createElement('video') as web.HTMLVideoElement;
+      element.src = url;
+      element.controls = true;
+      element.style.width = '100%';
+      element.style.height = '100%';
+      element.style.objectFit = 'contain';
+      element.style.backgroundColor = '#000';
       _createdElements.add(element);
       return element;
     });
@@ -146,24 +154,27 @@ class WebImplementation {
   /// Build audio element
   static Widget _buildAudioElement(String url) {
     return _createHtmlElementView((viewId) {
-      final element = html.AudioElement()
-        ..src = url
-        ..controls = true
-        ..style.width = '100%'
-        ..style.padding = '20px';
+      final element =
+          web.document.createElement('audio') as web.HTMLAudioElement;
+      element.src = url;
+      element.controls = true;
+      element.style.width = '100%';
+      element.style.padding = '20px';
       _createdElements.add(element);
       return element;
     });
   }
 
   /// Build iframe element
-  static Widget _buildIframeElement(String url, {bool allowFullscreen = false}) {
+  static Widget _buildIframeElement(String url,
+      {bool allowFullscreen = false}) {
     return _createHtmlElementView((viewId) {
-      final element = html.IFrameElement()
-        ..src = url
-        ..style.border = 'none'
-        ..style.width = '100%'
-        ..style.height = '100%';
+      final element =
+          web.document.createElement('iframe') as web.HTMLIFrameElement;
+      element.src = url;
+      element.style.border = 'none';
+      element.style.width = '100%';
+      element.style.height = '100%';
 
       if (allowFullscreen) {
         element.allowFullscreen = true;
@@ -176,10 +187,10 @@ class WebImplementation {
 
   /// Build office file preview (download prompt)
   static Widget _buildOfficePreview(
-      BuildContext context,
-      ViewerState state,
-      ViewerConfig config,
-      ) {
+    BuildContext context,
+    ViewerState state,
+    ViewerConfig config,
+  ) {
     final theme = config.theme ?? ViewerTheme.fromThemeData(Theme.of(context));
 
     return Center(
@@ -239,16 +250,18 @@ class WebImplementation {
     );
   }
 
-  /// Create HTML element view
+  /// Create HTML element view using modern platform views
   static Widget _createHtmlElementView(
-      html.Element Function(String viewId) elementBuilder,
-      ) {
+    web.Element Function(String viewId) elementBuilder,
+  ) {
     final viewId = 'universal-viewer-${_viewIdCounter++}';
+    final element = elementBuilder(viewId);
 
+    // Register the view factory using modern API
     // ignore: undefined_prefixed_name
     ui_web.platformViewRegistry.registerViewFactory(
       viewId,
-          (int viewId) => elementBuilder(viewId.toString()),
+      (int viewId) => element,
     );
 
     return HtmlElementView(viewType: viewId);

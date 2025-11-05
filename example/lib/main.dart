@@ -73,12 +73,19 @@ class _DemoHomePageState extends State<DemoHomePage> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
+    debugPrint('Failed to pick file: $message');
+    // Schedule the snack bar to show after the current frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    });
   }
 
   @override
@@ -133,18 +140,23 @@ class _DemoHomePageState extends State<DemoHomePage> {
                     ),
                     _buildExampleChip(
                       'PDF Sample',
-                      'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                      'https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf',
                       Icons.picture_as_pdf,
                     ),
                     _buildExampleChip(
                       'YouTube',
-                      'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                      'https://music.youtube.com/watch?v=vbnf6aHwPck&si=WXUi7yn1rI5eswJ1',
                       Icons.play_circle,
                     ),
                     _buildExampleChip(
                       'Image',
-                      'https://picsum.photos/800/600',
+                      'https://media.licdn.com/dms/image/v2/D5603AQErh8sT03iFcw/profile-displayphoto-shrink_800_800/B56ZTyveQ8GsAk-/0/1739239320019?e=1764201600&v=beta&t=yaBLLGDHhehEK3YMWYL6_IC8euXSIAufdWAudxzKcyM',
                       Icons.image,
+                    ),
+                    _buildExampleChip(
+                      'Power Point',
+                      'https://docs.google.com/presentation/d/1psoRQ_4tVprMgL0kTTrSFRnXsEngAnwA/edit?usp=sharing&ouid=116065241150934697049&rtpof=true&sd=true',
+                      Icons.slideshow_rounded,
                     ),
                   ],
                 ),

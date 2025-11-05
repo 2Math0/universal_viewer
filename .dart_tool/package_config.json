@@ -2,6 +2,12 @@
   "configVersion": 2,
   "packages": [
     {
+      "name": "args",
+      "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/args-2.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "async",
       "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/async-2.13.0",
       "packageUri": "lib/",
@@ -50,10 +56,22 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "cross_file",
+      "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/cross_file-0.3.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
       "name": "crypto",
       "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/crypto-3.0.7",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "dbus",
+      "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/dbus-0.7.11",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
     },
     {
       "name": "fake_async",
@@ -75,9 +93,9 @@
     },
     {
       "name": "file_picker",
-      "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/file_picker-6.2.1",
+      "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/file_picker-10.3.3",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.4"
     },
     {
       "name": "fixnum",
@@ -230,6 +248,12 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "petitparser",
+      "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/petitparser-7.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
       "name": "platform",
       "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/platform-3.1.6",
       "packageUri": "lib/",
@@ -351,9 +375,9 @@
     },
     {
       "name": "web",
-      "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/web-0.5.1",
+      "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/web-1.1.1",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.4"
     },
     {
       "name": "webview_flutter",
@@ -396,6 +420,12 @@
       "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/xdg_directories-1.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.3"
+    },
+    {
+      "name": "xml",
+      "rootUri": "file:///Users/2math/.pub-cache/hosted/pub.dev/xml-6.6.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
     },
     {
       "name": "universal_viewer",
