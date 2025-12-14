@@ -1,9 +1,9 @@
 name: universal_viewer
 description: A powerful Flutter package for displaying any content - websites, documents, videos, images, and more in web and mobile apps.
 version: 1.0.0
-homepage: https://github.com/yourusername/universal_viewer
-repository: https://github.com/yourusername/universal_viewer
-issue_tracker: https://github.com/yourusername/universal_viewer/issues
+homepage: https://github.com/2Math0/universal_viewer
+repository: https://github.com/y2Math0/universal_viewer
+issue_tracker: https://github.com/2Math0/universal_viewer/issues
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
